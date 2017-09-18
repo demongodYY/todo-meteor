@@ -1,15 +1,11 @@
 import { Template } from 'meteor/templating';
+import { ReactiveDict } from 'meteor/reactive-dict';
 
 import Tasks from '../imports/api/tasks.js';
 
 import './main.html';
 
-
-Template.tasks.helpers({
-  taskList() {
-    return Tasks.find({}, { sort: { createdAt: -1 } });
-  }
-});
+let bodyInstance = null;
 
 Template.body.events({
   'submit .new-task'(event) {
@@ -29,5 +25,40 @@ Template.body.events({
     // Clear form
     target.text.value = '';
   },
+  'change .hide-completed input'(event, instance) {
+    instance.state.set('hideCompleted', event.target.checked);
+  },
 });
+
+Template.body.onCreated( () => {
+  bodyInstance = Template.instance();
+  bodyInstance.state =  new ReactiveDict();
+});
+
+Template.body.helpers({
+  incompleteCount() {
+    return Tasks.find({ checked: { $ne: true } }).count();
+  },
+})
+
+Template.tasks.helpers({
+  taskList() {
+    if(bodyInstance.state.get('hideCompleted')) {
+      return Tasks.find({ checked: { $ne: true } }, { sort: { createdAt: -1 } });
+    }
+    return Tasks.find({}, { sort: { createdAt: -1 } });
+  },
+});
+
+Template.tasks.events({
+  'click .toggle-checked'() {
+    Tasks.update(this._id, {
+      $set: { checked: !this.checked},
+    });
+  },
+  'click .delete'() {
+    Tasks.remove(this._id);
+  },  
+
+})
 
