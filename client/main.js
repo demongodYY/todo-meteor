@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
 import Tasks from '../imports/api/tasks.js';
+import '../imports/startup/accounts-config.js';
 
 import './main.html';
 
@@ -39,7 +40,7 @@ Template.body.helpers({
   incompleteCount() {
     return Tasks.find({ checked: { $ne: true } }).count();
   },
-})
+});
 
 Template.tasks.helpers({
   taskList() {
@@ -60,5 +61,5 @@ Template.tasks.events({
     Tasks.remove(this._id);
   },  
 
-})
+});
 
