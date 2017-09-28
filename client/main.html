@@ -3,32 +3,6 @@
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>Todo List ({{incompleteCount}})</h1>
-        </header>
-        <label class="hide-completed">
-            <input type="checkbox" />
-            Hide Completed Tasks
-        </label>
-        {{> loginButtons}}
-        <ul>
-            {{> tasks}}
-        </ul>
-        {{#if currentUser}}
-            <form class="new-task">
-            <input type="text" name="text" placeholder="Type to add new tasks" />
-            </form>
-        {{/if}}
-    </div>
+    <div id="app"></div>
 </body>
 
-<template name="tasks">
-    {{#each taskList}}
-        <li class="{{#if checked}}checked{{/if}}">
-            <button class="delete">&times;</button>
-            <input type="checkbox" checked="{{checked}}" class="toggle-checked"/>
-            <span class="text"><strong>{{username}}</strong> - {{text}}</span>
-        </li>
-    {{/each}}
-</template>
